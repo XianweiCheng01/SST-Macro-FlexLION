@@ -110,7 +110,6 @@ LogPMemoryModel::Link::newAccess(Timestamp now, uint64_t size, TimeDelta byte_re
   TimeDelta delta = base - now;
   while (total_size > 0) {
     if (start_bw > req_bw) {
-      total_size = 0;
       delta += TimeDelta(total_size/req_bw);
       auto iter = bw_record_.find(now.sec()+delta.sec());
       if (iter != bw_record_.end()) {
@@ -118,6 +117,7 @@ LogPMemoryModel::Link::newAccess(Timestamp now, uint64_t size, TimeDelta byte_re
       } else {
         bw_record_[now.sec()+delta.sec()] = req_bw;
       }
+      total_size = 0;
     } else {
       if(bw_record_.size() == 0) {
         n_access += TimeDelta(total_size/start_bw);
